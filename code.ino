@@ -1,7 +1,7 @@
 // khai báo thư viện sử dụng
 #include <Arduino.h>
 #include <TimerOne.h>
-//#include <DHT.h>
+#include <DHT.h>
 
 // khai báo chuỗi kí tự trắng để truyền nhận dữ liệu
 String inputString = "";
@@ -23,12 +23,12 @@ int value_Q7;
 // Khai báo chân sensor MQ2
 const int sensor_Q2 = A0;
 int value_Q2;
-//// Khai báo chân sensor DHT11
-//const int DHTPIN = 5;
-//const int DHTTYPE = DHT11;
-//DHT dht(DHTPIN, DHTTYPE);
-//int h = 0;
-//int t = 0; 
+// Khai báo chân sensor DHT11
+const int DHTPIN = 5;
+const int DHTTYPE = DHT11;
+DHT dht(DHTPIN, DHTTYPE);
+int h = 0;
+int t = 0; 
 // Khai báo biến báo trạng thái thiết bị
 bool stt_led_1 = 0;
 bool stt_led_2 = 0;
@@ -66,24 +66,24 @@ void setup()
   Serial.begin(9600);  
   // Chuỗi nhận dữ liệu 200byte
   inputString.reserve(200);  
-//  // Chạy sensor DHT11
-//  dht.begin();
+  // Chạy sensor DHT11
+  dht.begin();
 }
 
 void loop() 
 {
-//  // Đọc dữ liệu sensor MQ7 (nồng độ khí CO) & MQ2 (báo khói)
-//  value_Q7 = analogRead(sensor_Q7);
-//  value_Q2 = analogRead(sensor_Q2);
-//  // Đọc dữ liệu sensor DHT11: nhiệt độ + độ ẩm
-//  h = dht.readHumidity();
-//  t = dht.readTemperature()-4;   
-//  // Đọc trạng thái thiết bị
-//  stt_led_1 = digitalRead(led_1);
-//  stt_led_2 = digitalRead(led_2);
-//  stt_fan_1 = digitalRead(fan_1);
-//  stt_fan_2 = digitalRead(fan_2);
-//  stt_led_3 = digitalRead(led_3);
+  // Đọc dữ liệu sensor MQ7 (nồng độ khí CO) & MQ2 (báo khói)
+  value_Q7 = analogRead(sensor_Q7);
+  value_Q2 = analogRead(sensor_Q2);
+  // Đọc dữ liệu sensor DHT11: nhiệt độ + độ ẩm
+  h = dht.readHumidity();
+  t = dht.readTemperature()-4;   
+  // Đọc trạng thái thiết bị
+  stt_led_1 = digitalRead(led_1);
+  stt_led_2 = digitalRead(led_2);
+  stt_fan_1 = digitalRead(fan_1);
+  stt_fan_2 = digitalRead(fan_2);
+  stt_led_3 = digitalRead(led_3);
 
   // Khi nhận được dữ liệu truyền xuống
   if (flag_data == 1)
@@ -217,33 +217,4 @@ void serialEvent()  // hàm ngắt, xảy ra khi có truyền nhận dữ liệu
       stringComplete = true;    
     }  
   } 
-}
-
-void timerIsr()   // hàm ngắt của timer, khi timer đếm đủ chu kỳ 1s sẽ thực thi trong hàm này
-{     
-  // Đọc dữ liệu sensor MQ7 (nồng độ khí CO) & MQ2 (báo khói)
-  value_Q7 = analogRead(sensor_Q7);
-  value_Q2 = analogRead(sensor_Q2);
-  stt_led_1 = digitalRead(led_1);
-  stt_led_2 = digitalRead(led_2);
-  stt_fan_1 = digitalRead(fan_1);
-  stt_fan_2 = digitalRead(fan_2);
-  stt_led_3 = digitalRead(led_3);
-  
-  Serial.print(stt_led_1);
-  Serial.print(",");
-  Serial.print(stt_led_2);
-  Serial.print(",");
-  Serial.print(stt_fan_1);
-  Serial.print(",");
-  Serial.print(stt_fan_2);
-  Serial.print(",");
-  Serial.print(stt_led_3);
-  Serial.print(",");
-  Serial.print(value_Q7);
-  Serial.print(",");
-  Serial.println(value_Q2);
-//  Serial.print(",");
-//  Serial.print(t); 
-//  Serial.println(h);
 }
